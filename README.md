@@ -2,6 +2,8 @@
 
 BBSH is a very basic implementation of a shell in C based on [Stephen Brennan's](https://brennan.io/) article [Write a Shell in C](https://brennan.io/2015/01/16/write-a-shell-in-c/).
 
+![Screenshot](images/ss.png)
+
 ## Limitations
 * Commands must be on a single line.
 * Arguments must be separated by whitespace.
