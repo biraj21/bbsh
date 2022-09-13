@@ -21,7 +21,7 @@ debug: $(BIN)
 	valgrind --log-file=valgrind.log ./bbsh
 
 clean:
-	rm -f $(BIN) $(OBJ)/*.o sample
+	# rm -f $(BIN) $(OBJ)/*.o sample
 
 setup:
-	mkdir -p src obj
+	# mkdir -p src obj

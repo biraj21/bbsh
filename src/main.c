@@ -6,13 +6,14 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include "builtins.h"
+#include "bbsh_types.h"
 
 void bbsh_loop(void);
 
 int main(void) {
     // load config files, if any
 
-    puts("Biraj's Basic SHell\n");
+    puts("Biraj's Basic Shell\n");
 
     // run the command loop
     bbsh_loop();
@@ -33,7 +34,7 @@ char *bbsh_read_line(void) {
     }
 
     size_t i = 0;
-    int c;
+    char c;
     while (true) {
         c = getchar();
 
@@ -63,9 +64,9 @@ char *bbsh_read_line(void) {
 #define BBSH_TOK_BUFSIZE 64
 #define BBSH_TOK_DELIM " \t"
 
-char **bbsh_split_line(char *line) {
+arg_t bbsh_split_line(char *line) {
     size_t bufsize = BBSH_TOK_BUFSIZE;
-    char **tokens = malloc(bufsize * sizeof(char *));
+    arg_t tokens = malloc(bufsize * sizeof(void *));
     if (tokens == NULL) {
         fputs("bbsh: allocation error", stderr);
         exit(EXIT_FAILURE);
@@ -79,7 +80,7 @@ char **bbsh_split_line(char *line) {
 
         if (i == bufsize) {
             bufsize += BBSH_TOK_BUFSIZE;
-            char **re_tokens = realloc(tokens, bufsize * sizeof(char *));
+            arg_t re_tokens = realloc(tokens, bufsize * sizeof(void *));
             if (re_tokens == NULL) {
                 free(tokens);
                 fputs("bbsh: allocation error\n", stderr);
@@ -96,7 +97,7 @@ char **bbsh_split_line(char *line) {
     return tokens;
 }
 
-bool bbsh_launch(char **args) {
+bool bbsh_launch(arg_t args) {
     pid_t pid = fork();
     if (pid == -1) {
         perror("bbsh");
@@ -117,7 +118,7 @@ bool bbsh_launch(char **args) {
     return true;
 }
 
-bool bbsh_execute(char **args) {
+bool bbsh_execute(arg_t args) {
     if (args[0] == NULL) {
         return true;
     }
@@ -132,10 +133,10 @@ bool bbsh_execute(char **args) {
     return bbsh_launch(args);
 }
 
-#define PATH_MAX 512
+#define BBSH_PATH_MAX 512
 
 void bbsh_loop(void) {
-    char cwd[PATH_MAX];
+    char cwd[BBSH_PATH_MAX];
     bool status = false;
 
     do {
@@ -148,7 +149,7 @@ void bbsh_loop(void) {
         }
 
         char *line = bbsh_read_line();
-        char **args = bbsh_split_line(line);
+        arg_t args = bbsh_split_line(line);
         status = bbsh_execute(args);
 
         free(line);
