@@ -1,11 +1,11 @@
 CC = cc
-FLAGS = -Wall -Werror -Wpedantic -Wextra
+INCLUDES = ./includes
+FLAGS = -Wall -Werror -Wpedantic -Wextra -I$(INCLUDES)
 SRC = ./src
 OBJ = ./obj
 BIN = ./bbsh
 SRC_FILES = $(wildcard $(SRC)/*)
 OBJ_FILES = $(patsubst $(SRC)/%.c, $(OBJ)/%.o, $(wildcard $(SRC)/*.c))
-
 all: setup $(BIN) clean_dirs
 
 $(OBJ)/main.o: $(SRC_FILES)

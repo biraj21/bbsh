@@ -3,4 +3,4 @@
 
 typedef char** arg_t;
 
-#endif // _BBSH_TYPES_H
+#endif // _BBSH_SRC_TYPES_H
