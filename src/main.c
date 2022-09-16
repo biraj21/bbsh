@@ -5,15 +5,17 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
+#include <limits.h>
 #include "builtins.h"
 #include "bbsh_types.h"
+#include "commons.h"
 
 void bbsh_loop(void);
+void motd();
 
 int main(void) {
     // load config files, if any
-
-    puts("Biraj's Basic Shell\n");
+    motd();
 
     // run the command loop
     bbsh_loop();
@@ -21,6 +23,19 @@ int main(void) {
     // perform any cleanup
 
     return EXIT_SUCCESS;
+}
+
+#define BBSH_MOTD_DIR ""
+void motd(){
+    FILE* file=fopen(BBSH_MOTD_DIR"motd","r");
+    if(!file){
+        fclose(file);
+        return;
+    }
+    char msg[512];
+    fread(msg,512,512,file);
+    fclose(file);
+    printf(msg,BBSH_VERSION_STR);
 }
 
 #define BBSH_RL_BUFSIZE 1024L
@@ -138,10 +153,14 @@ bool bbsh_execute(arg_t args) {
 void bbsh_loop(void) {
     char cwd[BBSH_PATH_MAX];
     bool status = false;
+    char hostname[HOST_NAME_MAX + 1];
+    char username[LOGIN_NAME_MAX + 1];
+    getlogin_r(username,LOGIN_NAME_MAX +1);
+    gethostname(hostname, HOST_NAME_MAX + 1);
 
     do {
         if (getcwd(cwd, sizeof(cwd)) != NULL) {
-            printf("┌─[%s]\n", cwd);
+            printf("┌─[%s@%s]-[%s]\n",username, hostname,cwd);
             printf("└──╼$ ");
         } else {
             perror("bbsh: getcwd() error");

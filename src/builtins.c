@@ -10,7 +10,7 @@ char *bbsh_builtins_str[] = {
     "pwd"
 };
 
-bool (*bbsh_builtins[]) (char **) = {
+bool (*bbsh_builtins[]) (arg_t) = {
     &bbsh_cd,
     &bbsh_exit,
     &bbsh_help,
@@ -18,10 +18,10 @@ bool (*bbsh_builtins[]) (char **) = {
 };
 
 size_t bbsh_num_builtins() {
-    return sizeof(bbsh_builtins_str) / sizeof(char *);
+    return sizeof(bbsh_builtins_str) / sizeof(void *);
 }
 
-static bool check_num_args(char **args, size_t limit) {
+static bool check_num_args(arg_t args, size_t limit) {
     for (size_t i = 0; args[i] != NULL; ++i) {
         if (i == limit) {
             return false;
@@ -31,7 +31,7 @@ static bool check_num_args(char **args, size_t limit) {
     return true;
 }
 
-bool bbsh_cd(char **args) {
+bool bbsh_cd(arg_t args) {
     if (args[1] == NULL) {
         fputs("bbsh: cd: expected argument\n", stderr);
     } else if (!check_num_args(args, 2)) {
@@ -45,7 +45,7 @@ bool bbsh_cd(char **args) {
     return true;
 }
 
-bool bbsh_exit(char **args) {
+bool bbsh_exit(arg_t args) {
     if (!check_num_args(args, 1)) {
         fputs("bbsh: exit: warning: too many arguments\n", stdout);
     }
@@ -53,7 +53,7 @@ bool bbsh_exit(char **args) {
     return false;
 }
 
-bool bbsh_help(char **args) {
+bool bbsh_help(arg_t args) {
     if (!check_num_args(args, 1)) {
         fputs("bbsh: help: warning: too many arguments\n", stdout);
     }
@@ -71,10 +71,10 @@ bool bbsh_help(char **args) {
     return true;
 }
 
-#define PATH_MAX 512
-char cwd[PATH_MAX];
+#define BBSH_PATH_MAX 512
+char cwd[BBSH_PATH_MAX];
 
-bool bbsh_pwd(char **args) {
+bool bbsh_pwd(arg_t args) {
     if (!check_num_args(args, 1)) {
         fputs("bbsh: pwd: warning: too many arguments\n", stdout);
     }

@@ -1,5 +1,5 @@
-#ifndef _BBSH_BUILTINS_H
-#define _BBSH_BUILTINS_H
+#ifndef _BBSH_SRC_BUILTINS_H
+#define _BBSH_SRC_BUILTINS_H
 
 #include <stdbool.h>
 #include "bbsh_types.h"

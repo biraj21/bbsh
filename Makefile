@@ -6,7 +6,7 @@ BIN = ./bbsh
 SRC_FILES = $(wildcard $(SRC)/*)
 OBJ_FILES = $(patsubst $(SRC)/%.c, $(OBJ)/%.o, $(wildcard $(SRC)/*.c))
 
-all: setup clean $(BIN)
+all: setup $(BIN) clean_dirs
 
 $(OBJ)/main.o: $(SRC_FILES)
 	$(CC) $(FLAGS) -c -o $@ $(SRC)/main.c
@@ -20,8 +20,12 @@ $(BIN): $(OBJ_FILES)
 debug: $(BIN)
 	valgrind --log-file=valgrind.log ./bbsh
 
-clean:
-	# rm -f $(BIN) $(OBJ)/*.o sample
+clean: clean_dirs clean_bin
+
+clean_dirs:
+	rm -rf $(OBJ) sample
+clean_bin:
+	rm -rf $(BIN)
 
 setup:
-	# mkdir -p src obj
+	mkdir -p obj
